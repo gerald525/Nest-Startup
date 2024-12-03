@@ -7,7 +7,7 @@ FROM node:${NODE_VERSION}-alpine AS base
 WORKDIR /usr/src/app
 
 # copy package.json to install node modules
-COPY package.json ./
+COPY package.json package-lock.json ./
 
 # install node module(cached)
 RUN npm ci
