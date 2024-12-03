@@ -8,6 +8,7 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
 
-  await app.listen(parseInt(config.getOrThrow<string>("APP_PORT")) ?? 8000);
+  await app.listen(config.get<number>("APP_PORT") ?? 8000);
 }
+
 bootstrap();

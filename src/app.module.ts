@@ -11,7 +11,7 @@ import { ENV_FILE_PATH, EXPAND_VARIABLE } from './app.env';
       isGlobal: true,
       expandVariables: EXPAND_VARIABLE,
       envFilePath: ENV_FILE_PATH
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
