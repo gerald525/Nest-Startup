@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ENV_FILE_PATH, EXPAND_VARIABLE } from './app.env';
 
 import { HealthzModule } from './healthz/healthz.module';
+import { TypeormModule } from './typeorm/typeorm.module';
+import { CatsModule } from './cats/cats.module';
+import { AdminModule } from './admin/admin.module';
+import { AccountModule } from './account/account.module';
 
 @Module({
   imports: [
@@ -15,8 +17,10 @@ import { HealthzModule } from './healthz/healthz.module';
       envFilePath: ENV_FILE_PATH
     }),
     HealthzModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    TypeormModule,
+    CatsModule,
+    AdminModule,
+    AccountModule,
+  ]
 })
 export class AppModule {}
