@@ -1,18 +1,31 @@
-name: Docker Image CI
+name: Deploy to Docker
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
-
-  build:
-
-    runs-on: self-hosted
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag gerald525/demo:$(date +%s)
+    # 1. Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Build the Docker image
+    - name: Build Docker image
+      run: docker build -t nestjs-start:latest .
+
+    # 3. Push Docker image to remote server
+    - name: Deploy to Docker host
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.DEPLOY_DOCKER_HOST }}
+        username: ${{ secrets.DEPLOY_DOCKER_USER }}
+        password: ${{ secrets.DEPLOY_DOCKER_PASS }}
+        script: |
+          docker stop nestjs-start || true
+          docker rm nestjs-start || true
+          docker run -d --name nestjs-start -p 8080:8080 nestjs-start:latest
