@@ -1,31 +1,30 @@
-name: Deploy to Docker
+name: Build and Push to Docker Hub
 
 on:
   push:
     branches:
-      - master
+      - master  # Trigger on pushes to the master branch
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout the repository
+    # 1. Check out the repository
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2. Build the Docker image
-    - name: Build Docker image
-      run: docker build -t nestjs-start:latest .
-
-    # 3. Push Docker image to remote server
-    - name: Deploy to Docker host
-      uses: appleboy/ssh-action@v0.1.6
+    # 2. Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
       with:
-        host: ${{ secrets.DEPLOY_DOCKER_HOST }}
-        username: ${{ secrets.DEPLOY_DOCKER_USER }}
-        password: ${{ secrets.DEPLOY_DOCKER_PASS }}
-        script: |
-          docker stop nestjs-start || true
-          docker rm nestjs-start || true
-          docker run -d --name nestjs-start -p 8080:8080 nestjs-start:latest
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # 3. Build the Docker image
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-repo:latest .
+
+    # 4. Push the Docker image to Docker Hub
+    - name: Push Docker image
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-repo:latest
