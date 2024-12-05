@@ -28,7 +28,7 @@ export class HealthzController {
   @HealthCheck()
   public async readiness() {
     const service_ping_checks: HealthIndicatorFunction[] = [
-      () => this.db_healthz.pingCheck("PostgreSQL")
+      () => this.db_healthz.pingCheck("postgres")
     ]
 
     return this.healthz.check(service_ping_checks);

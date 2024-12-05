@@ -1,0 +1,30 @@
+services:
+  server:
+    image: server
+    container_name: server
+    build:
+      context: .
+      args:
+        - env=development
+    depends_on:
+      - postgres
+    networks:
+      - nest-network
+    ports:
+      - 8080:8080
+  
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: Elsa19730804
+      POSTGRES_USER: nestuser
+    networks:
+      - nest-network
+    ports:
+      - 5432:5432
+    restart: on-failure
+
+networks:
+  nest-network:
+    driver: bridge

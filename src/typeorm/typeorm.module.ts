@@ -21,21 +21,22 @@ export class TypeormModule {
             const final_options: TypeOrmModuleOptions = {
               type: 'postgres',
               host: config.getOrThrow<string>('DB_HOST'),
-              port: config.getOrThrow<number>('DB_PORT'),
+              port: parseInt(config.getOrThrow<string>('DB_PORT'), 10),
               username: config.getOrThrow<string>('DB_USERNAME'),
               password: config.getOrThrow<string>('DB_PASSWORD'),
-              database: `${process.env.NODE_ENV}_${config.getOrThrow<string>('DB_DATABASE')}`,
+              database: config.getOrThrow<string>('DB_DATABASE'),
               entities: [__dirname + '/../**/*.entity.ts'],
               migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
               migrationsRun: false,
               synchronize: false,
               logging: JSON.parse(config.getOrThrow<string>('DB_LOGGING')),
-							...options
+              ...options,
             };
 
             await createDatabase({
-              ifNotExist: true,
               options: final_options as DataSourceOptions,
+            }).catch((error) => {
+              console.log(error);
             });
 
             return final_options;
