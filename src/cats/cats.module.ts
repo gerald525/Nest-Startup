@@ -4,6 +4,18 @@ import { CatsController } from './cats.controller';
 
 @Module({
   controllers: [CatsController],
-  providers: [CatsService],
+  providers: [
+    CatsService,
+    {
+      provide: 'ICatsService',
+      useClass: CatsService,
+    },
+  ],
+  exports: [
+    "ICatsService",
+    CatsService
+  ]
 })
-export class CatsModule {}
+export class CatsModule {
+  constructor(private catsService: CatsService) {}
+}

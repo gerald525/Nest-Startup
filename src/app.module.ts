@@ -17,7 +17,7 @@ import { AccountModule } from './account/account.module';
       envFilePath: ENV_FILE_PATH
     }),
     HealthzModule,
-    TypeormModule,
+    TypeormModule.forRoot(),
     CatsModule,
     AdminModule,
     AccountModule,

@@ -6,6 +6,7 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  Inject,
   Param,
   Post,
   Put,
@@ -19,22 +20,34 @@ import { Observable } from 'rxjs';
 
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
+import { Cat } from './interfaces/cat.interface';
+import { AdminService } from 'src/admin/admin.service';
 
 @Controller('cats')
 export class CatsController {
-  constructor(private readonly catsService: CatsService) {}
+  constructor(
+    private readonly catsService: CatsService,
+    private readonly adminService: AdminService,
+    @Inject('ICatsService') private readonly iCatsService: CatsService,
+  ) {}
 
   @Post()
   @HttpCode(204)
   @Header('Cache-Control', 'no-store')
   create(@Body() createCatDto: CreateCatDto, @Res() res: Response): string {
+    this.iCatsService.create(createCatDto);
     (res as any).status(HttpStatus.CREATED).send('This action adds a new cat');
     return 'This action adds a new cat';
   }
 
   @Get()
+  async findAll(): Promise<Cat[]> {
+    return this.iCatsService.findAll();
+  }
+
+  @Get('redirect')
   @Redirect('https://nestjs.com', 301)
-  findAll(@Req() request: Request): string {
+  redirectTo(@Req() request: Request): string {
     return 'This action returns all cats';
   }
 
